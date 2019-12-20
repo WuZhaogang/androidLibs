@@ -1,7 +1,6 @@
 package com.wzg.core.base
 
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.orhanobut.logger.Logger
 import com.wzg.core.model.ErrorModel
 import com.wzg.core.uiKit.CustomRecyclerView
 import com.wzg.core.uiKit.CustomRefreshLayout
@@ -13,7 +12,7 @@ import com.wzg.core.uiKit.CustomRefreshLayout
  * 修改时间:  2018/5/31
  * 修改备注:  说明本次修改内容
  */
-abstract class BaseListActivity<P : BasePresenter<*, *>, A : BaseRecyclerAdapter<*>> : BaseActivity<P>() {
+abstract class BaseListActivity<P : BasePresenter<*>, A : BaseRecyclerAdapter<*>> : BaseActivity<P>() {
     var layRefresh: CustomRefreshLayout? = null
     var recycleAdapter: A? = null
     var rlData: CustomRecyclerView? = null

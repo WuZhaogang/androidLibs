@@ -21,7 +21,7 @@ import com.wzg.core.model.ErrorModel
  * @note 备注
  */
 
-abstract class BaseDialogFragment<T : BasePresenter<*,*>> : DialogFragment(), BaseView {
+abstract class BaseDialogFragment<T : BasePresenter<*>> : DialogFragment(), BaseView {
     var rootView: View? = null
 
     protected var mPresenter: T? = null

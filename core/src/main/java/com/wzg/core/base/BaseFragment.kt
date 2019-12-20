@@ -20,7 +20,7 @@ import com.wzg.core.utils.SharedPreferencesUtil
  * 修改时间:  2018/2/1
  * 修改备注:  说明本次修改内容
  */
-abstract class BaseFragment<P : BasePresenter<*, *>> : BaseLazyFragment(), BaseView {
+abstract class BaseFragment<P : BasePresenter<*>> : BaseLazyFragment(), BaseView {
     var rootView: View? = null
 
     protected var mPresenter: P? = null
