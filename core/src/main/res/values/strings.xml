@@ -1,0 +1,14 @@
+<resources>
+    <string name="confirm">确定</string>
+    <string name="cancel">取消</string>
+    <string name="yes">好的</string>
+    <string name="no">不</string>
+    <string name="cameraPermission">请授予访问相机权限</string>
+    <string name="WRITE_EXTERNAL_STORAGE">请授予应用正常运行所需权限</string>
+    <string name="returned_from_app_settings_to_activity">
+        跳转至设置页面授予权限:
+        \n\nCamera: %s
+        \nLocation &amp; Contacts: %s
+        \nSMS: %s
+    </string>
+</resources>
