@@ -1,12 +1,12 @@
 package com.wzg.core.uiKit
 
 import android.content.Context
-import android.text.Editable
-import android.text.SpannableStringBuilder
-import android.text.TextWatcher
+import android.text.InputFilter
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextUtils
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
-import java.util.regex.Pattern
 
 
 /**
@@ -39,85 +39,63 @@ class CustomEditText : AppCompatEditText {
 
     // 初始化edittext 控件
     private fun initEditText() {
-        addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-//                if (!resetText) {
-//                    cursorPos = selectionEnd
-//                    inputAfterText = s.toString()
-//                }
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-//                if (!resetText) {
-//                    if (count >= 2) {
-//                        val input = s.subSequence(cursorPos, cursorPos + count)
-//                        if (containsEmoji(input.toString())) {
-//                            resetText = true
-//                            setText(inputAfterText)
-//                            val text = text
-//                            if (text is Spannable) {
-//                                val spanText = text as Spannable
-//                                Selection.setSelection(spanText, text.length)
-//                            }
-//                        }
-//                    }
-//                } else {
-//                    resetText = false
-//                }
-                if (count - before >= 1) {
-                    val input = s.subSequence(start + before, start + count);
-                    if (isEmoji(input.toString())) {
-                        (s as SpannableStringBuilder).delete(start + before, start + count);
-                    }
-                }
-            }
-
-            override fun afterTextChanged(editable: Editable) {
-
-            }
-        })
+        filters = arrayOf(EmojiFilter())
     }
 
+    class EmojiFilter : InputFilter {
+        override fun filter(
+            source: CharSequence, start: Int, end: Int,
+            dest: Spanned, dstart: Int, dend: Int
+        ): CharSequence {
+            val buffer = StringBuffer()
+            var i = start
+            while (i < end) {
+                val codePoint = source[i]
+                if (!getIsEmoji(codePoint)) {
+                    buffer.append(codePoint)
+                } else {
+                    i++
+                }
+                i++
+            }
+            return if (source is Spanned) {
+                val sp = SpannableString(buffer)
+                TextUtils.copySpansFrom(
+                    source, start, end, null,
+                    sp, 0
+                )
+                sp
+            } else {
+                buffer
+            }
+        }
 
-    /**
-     * 检测是否有emoji表情
-     *
-     * @param source
-     * @return
-     */
-//    fun containsEmoji(source: String): Boolean {
-//        val len = source.length
-//        for (i in 0 until len) {
-//            val codePoint = source[i]
-//            if (!isEmojiCharacter(codePoint)) { //如果不能匹配,则该字符是Emoji表情
-//                return true
-//            }
-//        }
-//        return false
-//    }
-
-    /**
-     * 判断是否是Emoji
-     *
-     * @param codePoint 比较的单个字符
-     * @return
-     */
-//    private fun isEmojiCharacter(codePoint: Char): Boolean {
-//        return codePoint.toInt() == 0x0 || codePoint.toInt() == 0x9 || codePoint.toInt() == 0xA ||
-//                codePoint.toInt() == 0xD || codePoint.toInt() >= 0x20 && codePoint.toInt() <= 0xD7FF ||
-//                codePoint.toInt() >= 0xE000 && codePoint.toInt() <= 0xFFFD ||
-//                codePoint.toInt() >= 0x10000 && codePoint.toInt() <= 0x10FFFF
-//    }
-    /**
-     * 正则判断emoji表情
-     * @param input
-     * @return
-     */
-    private fun isEmoji(input: String): Boolean {
-        val p = Pattern.compile("[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\ud83e\udc00-\ud83e\udfff]" +
-                "|[\u2100-\u32ff]|[\u0030-\u007f][\u20d0-\u20ff]|[\u0080-\u00ff]")
-        var m = p.matcher(input)
-        return m.find()
+        fun getIsEmoji(codePoint: Char): Boolean {
+            return if (codePoint.toInt() == 0x0 || codePoint.toInt() == 0x9 || codePoint.toInt() == 0xA
+                || codePoint.toInt() == 0xD
+                || codePoint.toInt() >= 0x20 && codePoint.toInt() <= 0x29
+                || codePoint.toInt() >= 0x2A && codePoint.toInt() <= 0x3A
+                || codePoint.toInt() >= 0x40 && codePoint.toInt() <= 0xA8
+                || codePoint.toInt() >= 0xAF && codePoint.toInt() <= 0x203B
+                || codePoint.toInt() >= 0x203D && codePoint.toInt() <= 0x2048
+                || codePoint.toInt() >= 0x2050 && codePoint.toInt() <= 0x20e2
+                || codePoint.toInt() >= 0x20e4 && codePoint.toInt() <= 0x2100
+                || codePoint.toInt() >= 0x21AF && codePoint.toInt() <= 0x2300
+                || codePoint.toInt() >= 0x23FF && codePoint.toInt() <= 0X24C1
+                || codePoint.toInt() >= 0X24C3 && codePoint.toInt() <= 0x2500
+                || codePoint.toInt() >= 0x2800 && codePoint.toInt() <= 0x2933
+                || codePoint.toInt() >= 0x2936 && codePoint.toInt() <= 0x2AFF
+                || codePoint.toInt() >= 0x2C00 && codePoint.toInt() <= 0x3029
+                || codePoint.toInt() >= 0x3031 && codePoint.toInt() <= 0x303C
+                || codePoint.toInt() >= 0x303E && codePoint.toInt() <= 0x3296
+                || codePoint.toInt() >= 0x32A0 && codePoint.toInt() <= 0xD7FF
+                || codePoint.toInt() >= 0xE000 && codePoint.toInt() <= 0xFE0E
+                || codePoint.toInt() >= 0xFE10 && codePoint.toInt() <= 0xFFFD
+                || codePoint.toInt() >= 0x10000 && codePoint.toInt() <= 0x10FFFF
+            ) {
+                false
+            } else true
+        }
     }
 
 }
