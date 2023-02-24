@@ -31,11 +31,6 @@ public class CustomRefreshLayout extends SmartRefreshLayout {
         setDefaultHeaderView();
     }
 
-    public CustomRefreshLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        setDefaultHeaderView();
-    }
-
     private void setDefaultHeaderView() {
         setRefreshHeader(new MaterialHeader(getContext()));
         setEnableLoadMore(false);
